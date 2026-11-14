@@ -2,15 +2,33 @@
   "name": "vace",
   "repo": "romingodelfuego/fakinflu-vace-worker",
   "visibility": "private",
-  "description": "fakinflu RunPod serverless worker: vace (alibaba-pai/Wan2.2-VACE-Fun-A14B)",
+  "description": "fakinflu RunPod serverless worker: Maquette decor layer (Couche decor). Wan 2.2 VACE Fun A14B (fp8 scaled, high + low noise experts) on ComfyUI native nodes (WanVaceToVideo), models baked. Inputs: Maquette passes (depth, clay, pose) as control video, optional mask + base layer, 0-4 global reference images, prompt. Windows of 81 frames, 9 carried over. Outputs: result.mp4, preview.jpg.",
+  "license": "Wan2.2-VACE-Fun-A14B (alibaba-pai, Comfy-Org repackage): apache-2.0; umT5-XXL encoder and Wan 2.1 VAE (Comfy-Org): apache-2.0; Wan2.2-Lightning lightx2v T2V LoRA: apache-2.0. Generated content: Wan licence terms apply (no claim on outputs).",
   "endpoint": {
-    "name": "romingodelfuego/fakinflu-vace-worker",
+    "name": "fakinflu-vace-worker",
     "env_var": "RUNPOD_VACE_ENDPOINT_ID",
-    "gpu_pools": ["AMPERE_24"],
-    "workers": {"min": 0, "max": 2, "idleTimeout": 5},
-    "timeout_ms": 600000,
+    "gpu_pools": [
+      "A40",
+      "PRO_5999_MIG_48GB",
+      "RTX_PRO_5000",
+      "L40S",
+      "L40",
+      "RTX_6000_Ada",
+      "RTX_A6000"
+    ],
+    "workers": {
+      "min": 0,
+      "max": 1,
+      "idleTimeout": 5
+    },
+    "timeout_ms": 3600000,
     "flashboot": "FLASHBOOT",
-    "disk_gb": 40,
-    "env": {}
-  }
+    "disk_gb": 100,
+    "env": {
+      "COMFY_EXTRA_ARGS": "--disable-pinned-memory",
+      "VACE_JOB_TIMEOUT_S": "3000"
+    },
+    "notes": "PROPOSITION (2026-11-13), endpoint pas encore cree. GPU 48 Go, meme liste qu'openjutsu (pods compris) ; tarif = le plus cher, PRO_5999_MIG_48GB 1,00 $/h (POOL_USD_H). Image ~44 Go : 2 experts fp8 scaled 17,3 Go + umT5 fp8 6,7 Go + VAE + 2 LoRA lightx2v 1,2 Go. ComfyUI charge un expert a la fois sur 48 Go (l'autre en RAM) : RAM conteneur visee >= 48 Go, a mesurer (action probe). Timeout endpoint 3600 s ; chaque job envoie son executionTimeout (policy). VACE_JOB_TIMEOUT_S = par fenetre, < timeout_ms."
+  },
+  "version": "v0.1.0"
 }
