@@ -1,0 +1,16 @@
+{
+  "name": "vace",
+  "repo": "romingodelfuego/fakinflu-vace-worker",
+  "visibility": "private",
+  "description": "fakinflu RunPod serverless worker: vace (alibaba-pai/Wan2.2-VACE-Fun-A14B)",
+  "endpoint": {
+    "name": "romingodelfuego/fakinflu-vace-worker",
+    "env_var": "RUNPOD_VACE_ENDPOINT_ID",
+    "gpu_pools": ["AMPERE_24"],
+    "workers": {"min": 0, "max": 2, "idleTimeout": 5},
+    "timeout_ms": 600000,
+    "flashboot": "FLASHBOOT",
+    "disk_gb": 40,
+    "env": {}
+  }
+}
