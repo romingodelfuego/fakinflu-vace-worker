@@ -3,8 +3,8 @@
 # Tous Apache-2.0 (voir README, section Licences). sha256 = oid LFS lus via l'API HF le 2026-11-13.
 #
 #   MODELS_DIR=/comfyui/models ./download_models.sh core    # ~7 Go : umT5 fp8 scaled + VAE Wan 2.1 (memes fichiers qu'openjutsu)
-#   MODELS_DIR=/comfyui/models ./download_models.sh vace    # ~34,7 Go : experts haut et bas bruit, fp8 scaled (17,3 Go chacun)
-#   MODELS_DIR=/comfyui/models ./download_models.sh loras   # ~2,5 Go : lightx2v Wan2.2-Lightning T2V 4 etapes v1.1 (preset draft)
+#   MODELS_DIR=/comfyui/models ./download_models.sh high    # ~18,5 Go : expert haut bruit fp8 scaled + LoRA lightx2v haut bruit
+#   MODELS_DIR=/comfyui/models ./download_models.sh low     # ~18,5 Go : expert bas bruit fp8 scaled + LoRA lightx2v bas bruit
 set -euo pipefail
 
 MODELS_DIR="${MODELS_DIR:-/comfyui/models}"
@@ -38,18 +38,17 @@ case "${1:-}" in
        c3355d30191f1f066b26d93fba017ae9809dce6c627dda5f6a66eaa651204f68
     DL Comfy-Org/Wan-Animate-2 "$WA" vae/Wan2_1_VAE_bf16.safetensors vae \
        1ab9a32cc2c740f6e39d80d367ce5dcc28db8c71b79b28670546b8973e9d75f9 ;;
-  vace)
-    # alibaba-pai/Wan2.2-VACE-Fun-A14B (apache-2.0) reconditionne par Comfy-Org : modele complet (T2V A14B + blocs
-    # VACE) par expert, charge par UNETLoader. bf16 = 34,7 Go chacun : trop pour 48 Go, d'ou le fp8 scaled.
+  high)
+    # expert haut bruit + sa LoRA lightx2v : une couche d'image (~18 Go), comme le worker video
     DL Comfy-Org/Wan_2.2_ComfyUI_Repackaged "$W22" split_files/diffusion_models/wan2.2_fun_vace_high_noise_14B_fp8_scaled.safetensors diffusion_models \
        23130f30207f6c8697a5bead113ddc9904cfbb5e8fa51a550df3cee4d21fb54c
-    DL Comfy-Org/Wan_2.2_ComfyUI_Repackaged "$W22" split_files/diffusion_models/wan2.2_fun_vace_low_noise_14B_fp8_scaled.safetensors diffusion_models \
-       ca55a5cc543e28576edbd2079f8c1de05f71cd9e85bf96fab635f55663dbcb69 ;;
-  loras)
-    # lightx2v/Wan2.2-Lightning (apache-2.0), T2V A14B 4 etapes v1.1, reconditionne par Comfy-Org.
     DL Comfy-Org/Wan_2.2_ComfyUI_Repackaged "$W22" split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors loras \
-       698321cb86bd30c4af06c9b84e656a1048c8cb54e06d50694536fb5de37fde41
+       698321cb86bd30c4af06c9b84e656a1048c8cb54e06d50694536fb5de37fde41 ;;
+  low)
+    # expert bas bruit + sa LoRA lightx2v : une couche d'image (~18 Go)
+    DL Comfy-Org/Wan_2.2_ComfyUI_Repackaged "$W22" split_files/diffusion_models/wan2.2_fun_vace_low_noise_14B_fp8_scaled.safetensors diffusion_models \
+       ca55a5cc543e28576edbd2079f8c1de05f71cd9e85bf96fab635f55663dbcb69
     DL Comfy-Org/Wan_2.2_ComfyUI_Repackaged "$W22" split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors loras \
        ec95216e614b3c132c11bfb387b11feedf62163150ccc9068bca8a189771e75a ;;
-  *) echo "usage: $0 core|vace|loras" >&2; exit 2 ;;
+  *) echo "usage: $0 core|high|low" >&2; exit 2 ;;
 esac
