@@ -30,5 +30,5 @@
     },
     "notes": "PROPOSITION (2026-11-13), endpoint pas encore cree. GPU 48 Go, meme liste qu'openjutsu (pods compris) ; tarif = le plus cher, PRO_5999_MIG_48GB 1,00 $/h (POOL_USD_H). Image ~44 Go : 2 experts fp8 scaled 17,3 Go + umT5 fp8 6,7 Go + VAE + 2 LoRA lightx2v 1,2 Go. ComfyUI charge un expert a la fois sur 48 Go (l'autre en RAM) : RAM conteneur visee >= 48 Go, a mesurer (action probe). Timeout endpoint 3600 s ; chaque job envoie son executionTimeout (policy). VACE_JOB_TIMEOUT_S = par fenetre, < timeout_ms."
   },
-  "version": "v0.1.0"
+  "version": "v0.1.1"
 }
