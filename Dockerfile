@@ -31,8 +31,10 @@ RUN pip freeze | grep -iE '^(torch|torchvision|torchaudio|numpy|transformers|hug
 # --- Poids BAKES (~44 Go) ---------------------------------------------------------------------------
 COPY download_models.sh /tmp/download_models.sh
 RUN MODELS_DIR=/comfyui/models bash /tmp/download_models.sh core
-RUN MODELS_DIR=/comfyui/models bash /tmp/download_models.sh vace
-RUN MODELS_DIR=/comfyui/models bash /tmp/download_models.sh loras && rm -f /tmp/download_models.sh
+# Une couche par expert (comme le worker video) : une couche unique de 35 Go depassait la limite de build RunPod
+# (30 min, compression et envoi d'une couche = un seul flux).
+RUN MODELS_DIR=/comfyui/models bash /tmp/download_models.sh high
+RUN MODELS_DIR=/comfyui/models bash /tmp/download_models.sh low && rm -f /tmp/download_models.sh
 
 # --- Handler fakinflu (remplace /handler.py de worker-comfyui) ---------------------------------------
 COPY transfer.py clips.py workflow.py VERSION* /fakinflu/
